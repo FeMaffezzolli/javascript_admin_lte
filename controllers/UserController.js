@@ -77,6 +77,7 @@ class UserController {
     return new User(
       user.name,
       user.gender,
+      user.birth,
       user.country,
       user.email,
       user.password,
@@ -95,7 +96,8 @@ class UserController {
       <td>${userData.name}</td>
       <td>${userData.email}</td>
       <td>${(userData.admin) ? 'Sim' : 'Não'}</td>
-      <td>${userData.birth}</td>
+      <!-- <td>${userData.register.toLocaleString()}</td> -->
+      <td>${Utils.dateFormat(userData.register)}</td>
       <td>
         <button type="button" class="btn btn-primary btn-xs btn-flat">Editar</button>
         <button type="button" class="btn btn-danger btn-xs btn-flat">Excluir</button>
