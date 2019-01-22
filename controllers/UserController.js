@@ -46,10 +46,14 @@ class UserController {
         reject(e);
       };
 
-      fileReader.readAsDataURL(file);
-    });
+      if (file) {
+        fileReader.readAsDataURL(file);
+      } else {
+        resolve('dist/img/boxed-bg.jpg');
+      }
 
-    }
+      });
+    } // Closing getPhoto()
 
   getValues() {
     let user = {};
@@ -57,6 +61,8 @@ class UserController {
     [...this.formEl.elements].forEach(function(field, index) {
       if (field.name == "gender") {
         if (field.checked) user[field.name] = field.value;
+      } else if (field.name == "admin") {
+        user[field.name] = field.checked;
       } else {
         user[field.name] = field.value;
       }
@@ -87,5 +93,5 @@ class UserController {
         </td>
       </tr>
     `;
-  }
+  } // Closing addUserLine()
 }
