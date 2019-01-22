@@ -9,9 +9,47 @@ class UserController {
     this.formEl.addEventListener("submit", event => {
       event.preventDefault();
 
-      this.addUserLine(this.getValues());
+      let values = this.getValues();
+
+      this.getPhoto().then(
+        (content)=>{
+          values.photo = content;
+          this.addUserLine(values);
+      },
+        (e)=>{
+        console.error(e);
+      }
+      );
+
     });
   } // closing onSubmit()
+
+  getPhoto() {
+
+    return new Promise((resolve, reject)=>{
+
+      let fileReader = new FileReader();
+
+      let elements = [...this.formEl.elements].filter(item=>{
+        if (item.name === 'photo') {
+          return item;
+        }
+      });
+
+      let file = elements[0].files[0];
+
+      fileReader.onload = ()=>{
+        resolve(fileReader.result);
+      };
+
+      fileReader.onerror = (e)=>{
+        reject(e);
+      };
+
+      fileReader.readAsDataURL(file);
+    });
+
+    }
 
   getValues() {
     let user = {};
@@ -38,7 +76,7 @@ class UserController {
   addUserLine(userData) {
     this.tableEl.innerHTML = `
       <tr>
-        <td><img src="dist/img/user1-128x128.jpg" alt="User Image" class="img-circle img-sm"></td>
+        <td><img src="${userData.photo}" alt="User Image" class="img-circle img-sm"></td>
         <td>${userData.name}</td>
         <td>${userData.email}</td>
         <td>${userData.admin}</td>
