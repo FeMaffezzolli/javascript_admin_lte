@@ -15,56 +15,63 @@ class UserController {
 
       let values = this.getValues();
 
+      if (!values) return false;
+
       this.getPhoto().then(
-        (content)=>{
+        content => {
           values.photo = content;
           this.addUserLine(values);
           this.formEl.reset();
           btn.diabled = false;
-      },
-        (e)=>{
-        console.error(e);
-      }
+        },
+        e => {
+          console.error(e);
+        }
       );
-
     });
   } // closing onSubmit()
 
   getPhoto() {
-
-    return new Promise((resolve, reject)=>{
-
+    return new Promise((resolve, reject) => {
       let fileReader = new FileReader();
 
-      let elements = [...this.formEl.elements].filter(item=>{
-        if (item.name === 'photo') {
+      let elements = [...this.formEl.elements].filter(item => {
+        if (item.name === "photo") {
           return item;
         }
       });
 
       let file = elements[0].files[0];
 
-      fileReader.onload = ()=>{
+      fileReader.onload = () => {
         resolve(fileReader.result);
       };
 
-      fileReader.onerror = (e)=>{
+      fileReader.onerror = e => {
         reject(e);
       };
 
       if (file) {
         fileReader.readAsDataURL(file);
       } else {
-        resolve('dist/img/boxed-bg.jpg');
+        resolve("dist/img/boxed-bg.jpg");
       }
-
-      });
-    } // Closing getPhoto()
+    });
+  } // Closing getPhoto()
 
   getValues() {
     let user = {};
+    let isValid = true;
 
     [...this.formEl.elements].forEach(function(field, index) {
+      if (
+        ["name", "email", "password"].indexOf(field.name) > -1 &&
+        !field.value
+      ) {
+        field.parentElement.classList.add("has-error");
+        isValid = false;
+      }
+
       if (field.name == "gender") {
         if (field.checked) user[field.name] = field.value;
       } else if (field.name == "admin") {
@@ -73,6 +80,8 @@ class UserController {
         user[field.name] = field.value;
       }
     });
+
+    if (!isValid) return false;
 
     return new User(
       user.name,
@@ -87,15 +96,16 @@ class UserController {
   } // closing getValues()
 
   addUserLine(userData) {
-
-    let tr = document.createElement('tr');
+    let tr = document.createElement("tr");
 
     tr.innerHTML = `
     <tr>
-      <td><img src="${userData.photo}" alt="User Image" class="img-circle img-sm"></td>
+      <td><img src="${
+        userData.photo
+      }" alt="User Image" class="img-circle img-sm"></td>
       <td>${userData.name}</td>
       <td>${userData.email}</td>
-      <td>${(userData.admin) ? 'Sim' : 'Não'}</td>
+      <td>${userData.admin ? "Sim" : "Não"}</td>
       <!-- <td>${userData.register.toLocaleString()}</td> -->
       <td>${Utils.dateFormat(userData.register)}</td>
       <td>
@@ -105,6 +115,6 @@ class UserController {
     </tr>
   `;
 
-    this.tableEl.appendChild(tr)
+    this.tableEl.appendChild(tr);
   } // Closing addUserLine()
 }
