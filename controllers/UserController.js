@@ -5,6 +5,7 @@ class UserController {
     this.tableEl = document.getElementById(tableId);
     this.onSubmit();
     this.onEdit();
+    this.selectAll();
   }
 
   onEdit() {
@@ -84,6 +85,7 @@ class UserController {
       this.getPhoto(this.formEl).then(
         content => {
           values.photo = content;
+          this.insert(values);
           this.addUserLine(values);
           this.formEl.reset();
           btn.diabled = false;
@@ -157,6 +159,31 @@ class UserController {
       user.photo,
       user.admin
     );
+  }
+
+  getUsersStorage() {
+    let users = [];
+
+    if (sessionStorage.getItem("users")) {
+      users = JSON.parse(sessionStorage.getItem("users"));
+    }
+    return users;
+  }
+
+  selectAll() {
+    let users = this.getUsersStorage();
+
+    users.forEach(userData => {
+      let user = new User();
+      user.loadFromJson(userData);
+      this.addUserLine(user);
+    });
+  }
+
+  insert(userData) {
+    let users = this.getUsersStorage();
+    users.push(userData);
+    sessionStorage.setItem("users", JSON.stringify(users));
   }
 
   addUserLine(userData) {

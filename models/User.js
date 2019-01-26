@@ -47,36 +47,47 @@ class User {
     return this._register;
   }
 
-  set name (name) {
+  set name(name) {
     this._name = name;
   }
 
-  set gender (gender) {
+  set gender(gender) {
     this._gender = gender;
   }
 
-  set birth (birth) {
+  set birth(birth) {
     this._birth = birth;
   }
 
-  set country (country) {
+  set country(country) {
     this._country = country;
   }
 
-  set email (email) {
+  set email(email) {
     this._email = email;
   }
 
-  set password (password) {
+  set password(password) {
     this._password = password;
   }
 
-  set photo (photo) {
+  set photo(photo) {
     this._photo = photo;
   }
 
-  set admin (admin) {
+  set admin(admin) {
     this._admin = admin;
   }
 
+  loadFromJson(json) {
+    for (let name in json) {
+      switch (name) {
+        case "_register":
+          this[name] = new Date(json[name]);
+          break;
+        default:
+          this[name] = json[name];
+      }
+    }
+  }
 }
